@@ -350,7 +350,7 @@
   }
   #yes-btn:hover { transform: scale(1.08); }
 
-  /* Update this exact block in your CSS */
+/* Update this exact block in your CSS style section */
 #no-btn {
   padding: 12px 28px;
   background: #f8c8d8;
@@ -362,20 +362,19 @@
   font-weight: 700;
   cursor: pointer;
   
-  position: absolute; 
-  /* FIX: display none ku bathila opacity & pointer events use panrom, coordinate breaks thadukka */
-  opacity: 0; 
-  pointer-events: none; 
-  
-  transition: opacity .3s, box-shadow .15s;
+  /* 📍 FIX 1: Initial flow relative state layout! Yes button pakkathulaye safe ah locked ah irukum */
+  position: relative; 
+  left: auto !important;
+  top: auto !important;
+  display: inline-block;
   z-index: 20;
   white-space: nowrap;
 }
 
-/* Page 3 vanthathum theriya intha class toggle aagum */
-#no-btn.show {
-  opacity: 1 !important;
-  pointer-events: all !important;
+/* 📍 FIX 2: User click panna udane javascript intha class ah active pannum, apo mattum thaan state fixed aahi escape mode on aagum */
+#no-btn.run-away {
+  position: fixed !important;
+  transition: left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1);
 }
 
 #no-btn:hover { box-shadow: 0 4px 16px var(--shadow); }
@@ -777,13 +776,9 @@ Adiyyaaeee Abiiii !!! 💗✨
 Sorrrryyyyyy ngaaaaaaa
 from the bottom of my hearttt !! 🌝❤️
 
-🥺💔
-
 I know I messed up...
 and this tiny pink heart has been
 carrying so much regret. 🥹💗
-
-🙂❤️‍🩹
 
 Please accept this little apology,
 wrapped with love 🌹❤️`;
@@ -813,7 +808,7 @@ function startTypewriter() {
 
 document.getElementById('continue-btn').addEventListener('click', () => {
   goToPage('page2', 'page3', 700);
-  setTimeout(initNoBtn, 800); 
+  setTimeout(initNoBtn, 750); // This resets layout variables baseline perfectly!
 });
 
 /* ═══════════════════════════════════════════════════
@@ -822,43 +817,40 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 function initNoBtn() {
   const noBtn = document.getElementById('no-btn');
   
-  // 1. Starting setup absolute inline reset. Yes pakkathulaye default structural CSS padhi ukkarum
-  noBtn.style.position = "static";
+  // Starting safe layout structure state sync clear
+  noBtn.classList.remove('run-away');
   noBtn.style.left = "auto";
   noBtn.style.top = "auto";
-  noBtn.style.transform = "none";
-  noBtn.style.transition = "none";
 
   function flee(e) {
     if (e) e.preventDefault();
     
-    // 2. Click panna udane layout flow-vatha thookitu relative absolute display coordinates element structure-ku instantly trigger panna vaikirom
-    noBtn.style.position = "fixed";
+    // 1. Click panna udane runtime class injection trigger panrom (state switches to position fixed instantly)
+    noBtn.classList.add('run-away');
     
     const bw = noBtn.offsetWidth || 90;
     const bh = noBtn.offsetHeight || 45;
     let nx, ny;
     
-    // 3. User screen interface boundary kulla safety jump coordinates loops execution
+    // 2. Active monitor layout display metrics calculation kulla window position randomization setup loops
     for (let attempt = 0; attempt < 50; attempt++) {
+      // Screen inner bounds variable boundary values calculation
       nx = Math.random() * (window.innerWidth - bw - 40) + 20;
       ny = Math.random() * (window.innerHeight - bh - 40) + 20;
       
-      // User thotta pointer dynamic space offset calculation
       const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
       const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
       
-      // Too close matching prevent profile
-      if (Math.hypot(nx - cx, ny - cy) > 120) break;
+      // Safety radius layout logic optimization
+      if (Math.hypot(nx - cx, ny - cy) > 130) break;
     }
     
-    // Smooth transition path animation frame
-    noBtn.style.transition = 'left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1)';
+    // 3. Dynamic absolute coordinate positioning assignment execution
     noBtn.style.left = nx + 'px';
     noBtn.style.top = ny + 'px';
   }
 
-  // Double click safety clearance setup bind click listener execution
+  // Double click event stacking safety prevention binding trigger execution
   noBtn.removeEventListener('click', flee);
   noBtn.addEventListener('click', flee);
 }
