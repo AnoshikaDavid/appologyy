@@ -196,9 +196,9 @@
   .cat-row-top {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 40px;
-    margin-bottom: -15px; /* Slight overlap on top of card for styling, change to 0px if you want complete separation */
+    align-items: flex-end;
+    gap: 25px;
+    margin-bottom: 5px; /* Slight overlap on top of card for styling, change to 0px if you want complete separation */
     width: 100%;
     z-index: 10; /* Higher z-index so it sits cleanly on top */
   }
@@ -209,14 +209,20 @@
     display: inline-block;
     filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
   }
-  .custom-img {
-    width: clamp(65px, 16vw, 90px); 
-    height: auto;
-    object-fit: contain;
-    user-select: none;
-    display: inline-block;
-    filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
-  }
+  /* Update this exact block in your CSS */
+.custom-img {
+  /* Mobile-la max 80px-kum, desktop-la max 140px-kum mela pogaatha maathiri bound panni iruken */
+  width: clamp(80px, 18vw, 140px);
+  height: auto;
+  max-height: 140px; /* Vertical-ah layout-ah push pannama iruka */
+  object-fit: contain;
+  user-select: none;
+  display: inline-block;
+  
+  /* Image back cuts background-ode overlap aahama clean-ah theriya */
+  vertical-align: bottom; 
+  filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
+}
   #cat-left  { animation: catFloat 3s ease-in-out infinite; }
   #cat-right { animation: catFloat 3s ease-in-out infinite .7s; }
   @keyframes catFloat {
