@@ -773,15 +773,14 @@ const apologyText = `🫀🧚‍♀️
 
 Adiyyaaeee Abiiii !!! 💗✨
 
-Sorrrryyyyyy ngaaaaaaa
+Sorrrryyyyyy !!!
 from the bottom of my hearttt !! 🌝❤️
 
-I know I messed up...
-and this tiny pink heart has been
-carrying so much regret. 🥹💗
+I know..nan pannathu thappuuu thaann...
+and this tiny heart has been
+carrying so much regret.. 🥹💗
 
-Please accept this little apology,
-wrapped with love 🌹❤️`;
+Ennaiii manichirumgaa pleasee...inimey ipdi aagathuu❤️`;
 
 let twTimeout = null;
 
@@ -817,44 +816,59 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 function initNoBtn() {
   const noBtn = document.getElementById('no-btn');
   
-  // Starting safe layout structure state sync clear
+  // Starting safe layout configuration resets
   noBtn.classList.remove('run-away');
+  noBtn.style.position = "relative";
   noBtn.style.left = "auto";
   noBtn.style.top = "auto";
-function flee(e) {
-    if (e) e.preventDefault();
+  noBtn.style.transform = "none";
+
+  function flee(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevents layout hierarchy bubbling glitches
+    }
     
-    // 1. Instantly switch to fixed layout on click trigger
+    // 1. Force setting absolute positioning layer directly style matrix
+    noBtn.style.position = "fixed";
     noBtn.classList.add('run-away');
-    
-    // 📍 CRITICAL FIX: Direct inline fixed overrides enforce panrom, thirumba thirumba click panna jump aagurathuku
-    noBtn.style.position = "fixed"; 
     
     const bw = noBtn.offsetWidth || 95;
     const bh = noBtn.offsetHeight || 45;
-    let nx, ny;
     
-    // 2. Fresh global screen coordinates calculation matrix loop
-    for (let attempt = 0; attempt < 60; attempt++) {
-      // Direct viewport window measurements basis-la positions randomise panrom
-      nx = Math.random() * (window.innerWidth - bw - 40) + 20;
-      ny = Math.random() * (window.innerHeight - bh - 40) + 20;
+    // 2. Clear out current active touch screen positions safely
+    const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
+    const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
+    
+    let nx = 0;
+    let ny = 0;
+    
+    // 3. Foolproof screen boundary dynamic calculation loops
+    for (let attempt = 0; attempt < 100; attempt++) {
+      // Direct global window pixel calculations overrides
+      nx = Math.floor(Math.random() * (window.innerWidth - bw - 60)) + 30;
+      ny = Math.floor(Math.random() * (window.innerHeight - bh - 60)) + 30;
       
-      const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
-      const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
+      // Target alignment logic: Strictly checks to ensure it does NOT lock at the exact center (image_753c97 box bug)
+      const distFromPointer = Math.hypot(nx - cx, ny - cy);
+      const distFromCenter = Math.hypot(nx - (window.innerWidth / 2), ny - (window.innerHeight / 2));
       
-      if (Math.hypot(nx - cx, ny - cy) > 130) break;
+      if (distFromPointer > 150 && distFromCenter > 80) {
+        break; // Found perfect random safe coordinates setup!
+      }
     }
     
-    // 3. Apply coordinates with forced execution properties
+    // 4. Directly enforcing layout updates without mixing rendering delays
     noBtn.style.left = nx + 'px';
     noBtn.style.top = ny + 'px';
   }
 
-
-  // Double click event stacking safety prevention binding trigger execution
-  noBtn.removeEventListener('click', flee);
-  noBtn.addEventListener('click', flee);
+  // Dual engine system handling touchscreens and mouse clicks perfectly
+  const eventsList = ['pointerdown', 'touchstart', 'click'];
+  eventsList.forEach(evt => {
+    noBtn.removeEventListener(evt, flee);
+    noBtn.addEventListener(evt, flee, { passive: false });
+  });
 }
 /* ═══════════════════════════════════════════════════
    PAGE 3 – YES BUTTON
