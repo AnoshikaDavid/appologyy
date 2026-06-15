@@ -25,7 +25,9 @@
 
   html, body {
     height: 100%;
-    overflow: hidden;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-family: 'Nunito', sans-serif;
     background: var(--pink0);
     color: var(--text-dark);
@@ -33,8 +35,11 @@
 
   /* ──────────────────────────── PAGES ──────────────────────────── */
   .page {
-    position: fixed;
-    inset: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,10 +47,10 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity .65s ease;
-    overflow: hidden;
+    padding: 40px 20px; /* Padding to ensure space on mobile */
   }
-  .page.active { opacity: 1; pointer-events: all; }
-  .page.fade-out { opacity: 0; pointer-events: none; }
+  .page.active { opacity: 1; pointer-events: all; position: relative; }
+  .page.fade-out { opacity: 0; pointer-events: none; position: absolute; }
 
   /* ──────────────────────────── BG CANVAS ──────────────────────── */
   canvas.bg {
@@ -67,31 +72,41 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
     text-align: center;
-    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* STICKERS ABOVE TEXT (Page 1) */
+  .sticker-row-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+    margin-bottom: 10px;
+    z-index: 5;
   }
 
   .above-text {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(1.1rem, 4vw, 1.5rem);
+    font-size: clamp(1.4rem, 6vw, 1.9rem);
     color: var(--text-mid);
     letter-spacing: 0.04em;
     text-shadow: 0 1px 6px rgba(231,84,128,.2);
     animation: floatY 3s ease-in-out infinite;
   }
 
-  /* BIG HEART */
   .heart-wrap {
     position: relative;
     cursor: pointer;
     filter: drop-shadow(0 0 22px rgba(231,84,128,.5));
     animation: heartbeat 1.2s ease-in-out infinite;
     transition: filter .2s;
+    margin: 15px 0;
   }
   .heart-wrap:hover { filter: drop-shadow(0 0 38px rgba(231,84,128,.8)); }
-
-  .heart-svg { width: clamp(130px,40vw,200px); height: auto; }
+  .heart-svg { width: clamp(150px, 50vw, 220px); height: auto; max-width: 100%; }
 
   @keyframes heartbeat {
     0%,100% { transform: scale(1); }
@@ -103,23 +118,29 @@
 
   .below-text {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(1rem, 3.5vw, 1.35rem);
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
     color: var(--text-mid);
     animation: floatY 3s ease-in-out infinite .5s;
   }
 
-  /* STICKERS */
-  .sticker {
-    position: fixed;
-    pointer-events: none;
-    z-index: 4;
-    font-size: clamp(40px,10vw,68px);
+  .sticker-inline {
+    font-size: clamp(55px, 15vw, 85px);
     line-height: 1;
     user-select: none;
+    display: inline-block;
   }
-  #teddy  { bottom: 8%;  left: 3%;  animation: waveTeddy 2s ease-in-out infinite, floatY 4s ease-in-out infinite; }
-  #bunny  { bottom: 10%; right: 3%; animation: floatY 3.5s ease-in-out infinite .3s; }
-  #butterfly { top: 12%; left: -80px; animation: flyButterfly 12s linear infinite; }
+  #teddy  { animation: waveTeddy 2s ease-in-out infinite, floatY 4s ease-in-out infinite; }
+  #bunny  { animation: floatY 3.5s ease-in-out infinite .3s; }
+
+  .butterfly-sticker {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    font-size: clamp(40px, 10vw, 65px);
+    top: 5%;
+    left: -80px;
+    animation: flyButterfly 12s linear infinite;
+  }
 
   @keyframes waveTeddy {
     0%,100% { transform: rotate(-8deg); }
@@ -132,23 +153,15 @@
   @keyframes flyButterfly {
     0%   { transform: translateX(-80px) translateY(0)   rotate(-10deg); opacity:0; }
     5%   { opacity:1; }
-    50%  { transform: translateX(50vw)  translateY(30px) rotate(8deg); }
+    50%  { transform: translateX(50vw)   translateY(30px) rotate(8deg); }
     95%  { opacity:1; }
     100% { transform: translateX(110vw) translateY(-20px) rotate(-5deg); opacity:0; }
-  }
-
-  /* BUNNY EARS bounce */
-  #bunny { animation: bunnyBounce 1.4s ease-in-out infinite; }
-  @keyframes bunnyBounce {
-    0%,100% { transform: translateY(0) scaleY(1); }
-    40%     { transform: translateY(-14px) scaleY(1.08); }
-    60%     { transform: translateY(-14px) scaleY(.94); }
   }
 
   /* HEART SPLIT */
   .heart-half {
     position: fixed;
-    font-size: 100px;
+    font-size: clamp(80px, 15vw, 110px);
     z-index: 100;
     pointer-events: none;
     top: 50%; left: 50%;
@@ -164,16 +177,61 @@
   #page2 {
     background: linear-gradient(160deg, #fff0f5 0%, #ffe4ec 60%, #ffd6e7 100%);
     z-index: 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
+  /* MAIN WRAPPER FOR PAGE 2 CONTENT FLOW */
+  .p2-layout-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 430px;
+  }
+
+  /* IMAGES/CATS PLACED EXACTLY ABOVE THE TEXT BOX */
+  .cat-row-top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: -15px; /* Slight overlap on top of card for styling, change to 0px if you want complete separation */
+    width: 100%;
+    z-index: 10; /* Higher z-index so it sits cleanly on top */
+  }
+
+  .cat-inline {
+    font-size: clamp(65px, 16vw, 90px);
+    user-select: none;
+    display: inline-block;
+    filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
+  }
+  .custom-img {
+    width: clamp(65px, 16vw, 90px); 
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    display: inline-block;
+    filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
+  }
+  #cat-left  { animation: catFloat 3s ease-in-out infinite; }
+  #cat-right { animation: catFloat 3s ease-in-out infinite .7s; }
+  @keyframes catFloat {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-12px); }
+  }
+
+  /* THE WHITE TEXT BOX CARD */
   .p2-content {
     position: relative;
     z-index: 5;
-    max-width: 480px;
-    width: 90%;
+    width: 100%;
     text-align: center;
-    padding: 30px 24px;
-    background: rgba(255,255,255,.55);
+    padding: 35px 22px;
+    background: rgba(255,255,255,.75);
     border-radius: 28px;
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 40px rgba(231,84,128,.18);
@@ -182,46 +240,30 @@
 
   #typewriter {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(1rem, 3.6vw, 1.25rem);
+    font-size: clamp(1.15rem, 4.5vw, 1.5rem);
     color: var(--text-dark);
     white-space: pre-wrap;
-    line-height: 1.75;
-    min-height: 180px;
+    line-height: 1.65;
+    min-height: 160px;
     text-align: center;
   }
 
-  .cat-sticker {
-    position: fixed;
-    bottom: 4%;
-    font-size: clamp(52px, 12vw, 80px);
-    z-index: 4;
-    pointer-events: none;
-    user-select: none;
-  }
-  #cat-left  { left: 0%;  animation: catFloat 3s ease-in-out infinite; }
-  #cat-right { right: 0%; animation: catFloat 3s ease-in-out infinite .7s; }
-  @keyframes catFloat {
-    0%,100% { transform: translateY(0); }
-    50%     { transform: translateY(-10px); }
-  }
-
   #continue-btn {
-    margin-top: 24px;
-    padding: 12px 36px;
+    margin-top: 25px;
+    padding: 12px 40px;
     background: linear-gradient(135deg, var(--pink2), var(--pink3));
     color: #fff;
     border: none;
     border-radius: 50px;
     font-family: 'Nunito', sans-serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     cursor: pointer;
     box-shadow: 0 4px 18px var(--shadow);
     opacity: 0;
     transition: opacity .5s, transform .2s, box-shadow .2s;
-    animation: heartbeat 1.4s ease-in-out infinite;
   }
-  #continue-btn.show { opacity: 1; }
+  #continue-btn.show { opacity: 1; animation: heartbeat 1.4s ease-in-out infinite; }
   #continue-btn:hover { transform: scale(1.07); box-shadow: 0 6px 28px var(--shadow); }
 
   /* ──────────────────────────── PAGE 3 ────────────────────────── */
@@ -230,8 +272,19 @@
     z-index: 8;
   }
 
+  .p3-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    z-index: 5;
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+  }
+
   .teddy-wrap {
-    font-size: clamp(72px, 20vw, 110px);
+    font-size: clamp(85px, 24vw, 115px);
     animation: teddyBounce 2s ease-in-out infinite;
     filter: drop-shadow(0 6px 14px rgba(231,84,128,.25));
     line-height: 1;
@@ -243,13 +296,13 @@
 
   .speech-bubble {
     position: relative;
-    background: rgba(255,255,255,.75);
+    background: rgba(255,255,255,.85);
     border-radius: 20px;
-    padding: 14px 22px;
-    max-width: 280px;
+    padding: 16px 24px;
+    width: 95%;
     text-align: center;
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(.95rem, 3.5vw, 1.15rem);
+    font-size: clamp(1.15rem, 4.8vw, 1.45rem);
     color: var(--text-dark);
     border: 1.5px solid rgba(255,183,197,.7);
     backdrop-filter: blur(6px);
@@ -263,16 +316,35 @@
     left: 50%;
     transform: translateX(-50%);
     border: 7px solid transparent;
-    border-top-color: rgba(255,255,255,.75);
+    border-top-color: rgba(255,255,255,.85);
   }
 
   .buttons-row {
     display: flex;
     gap: 16px;
-    flex-wrap: wrap;
+    width: 100%;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: 10px;
+    min-height: 55px;
   }
+
+  #yes-btn {
+    padding: 12px 36px;
+    background: linear-gradient(135deg, var(--pink2), var(--pink3));
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 18px var(--shadow);
+    animation: heartbeat 1.3s ease-in-out infinite;
+    transition: transform .2s;
+    white-space: nowrap;
+    z-index: 5;
+  }
+  #yes-btn:hover { transform: scale(1.08); }
 
   #no-btn {
     padding: 12px 28px;
@@ -284,31 +356,12 @@
     font-size: .95rem;
     font-weight: 700;
     cursor: pointer;
-    position: fixed; /* so it can move freely */
+    position: fixed; 
     transition: box-shadow .15s;
     z-index: 20;
     white-space: nowrap;
   }
   #no-btn:hover { box-shadow: 0 4px 16px var(--shadow); }
-
-  #yes-btn {
-    padding: 12px 28px;
-    background: linear-gradient(135deg, var(--pink2), var(--pink3));
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    font-family: 'Nunito', sans-serif;
-    font-size: .95rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 18px var(--shadow);
-    animation: heartbeat 1.3s ease-in-out infinite;
-    transition: transform .2s;
-    white-space: nowrap;
-    position: relative;
-    z-index: 5;
-  }
-  #yes-btn:hover { transform: scale(1.08); }
 
   /* ──────────────────────────── PAGE 4 ────────────────────────── */
   #page4 {
@@ -322,25 +375,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 22px;
     text-align: center;
-    padding: 20px;
-    max-width: 420px;
-    width: 90%;
+    max-width: 400px;
+    width: 100%;
   }
 
   #final-text {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(1.2rem, 4.5vw, 1.6rem);
+    font-size: clamp(1.45rem, 6vw, 2rem);
     color: var(--text-dark);
     white-space: pre-wrap;
-    line-height: 1.85;
+    line-height: 1.7;
     text-align: center;
     min-height: 80px;
   }
 
   .cat-final {
-    font-size: clamp(70px, 18vw, 100px);
+    font-size: clamp(80px, 22vw, 110px);
     animation: kissFloat 2s ease-in-out infinite;
     filter: drop-shadow(0 4px 16px rgba(231,84,128,.3));
   }
@@ -351,11 +403,11 @@
 
   .speech-bubble-final {
     position: relative;
-    background: rgba(255,255,255,.7);
+    background: rgba(255,255,255,.75);
     border-radius: 20px;
-    padding: 12px 24px;
+    padding: 14px 26px;
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(1.05rem, 4vw, 1.3rem);
+    font-size: clamp(1.25rem, 5vw, 1.6rem);
     color: var(--text-dark);
     border: 1.5px solid rgba(255,183,197,.7);
     backdrop-filter: blur(8px);
@@ -369,7 +421,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 7px solid transparent;
-    border-bottom-color: rgba(255,255,255,.7);
+    border-bottom-color: rgba(255,255,255,.75);
   }
 
   /* ──────────────────────────── CONFETTI ─────────────────────── */
@@ -400,57 +452,32 @@
     0%   { transform: translate(0,0) scale(1); opacity:1; }
     100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity:0; }
   }
-
-  /* ──────────────────────────── UTILITY ───────────────────────── */
-  @keyframes pulse-glow {
-    0%,100% { box-shadow: 0 0 12px rgba(231,84,128,.3); }
-    50%      { box-shadow: 0 0 28px rgba(231,84,128,.6); }
-  }
-
-  .p3-inner {
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    z-index: 5;
-    position: relative;
-  }
-
-  @media (max-width: 380px) {
-    .buttons-row { flex-direction: column; align-items: center; }
-  }
 </style>
 </head>
 <body>
 
-<!-- BG PARTICLE CANVAS (shared) -->
 <canvas class="bg" id="bgCanvas"></canvas>
 
-<!-- ===================== PAGE 1 ===================== -->
 <div class="page active" id="page1">
-  <span class="sticker" id="teddy">
-(\_/)
-(•-•)
-/>🤍
-  </span>
-  <span class="sticker" id="bunny">🧸🎀</span>
-  <span class="sticker" id="butterfly"></span>
+  <span class="butterfly-sticker" id="butterfly">🦋</span>
 
   <div class="p1-content">
+    <div class="sticker-row-top">
+      <span class="sticker-inline" id="teddy"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM-removebg-preview.png" alt="hugging kittens"/>
+</span>
+      <span class="sticker-inline" id="bunny"><img class="final-cat" src="images\download__6_-removebg-preview.png"alt="hugging kittens"/>
+  </span>
+    </div>
+
     <p class="above-text">A little something for you... 💗</p>
 
     <div class="heart-wrap" id="heartBtn" title="Tap me!">
-      <!-- Glossy 3D SVG Heart -->
       <svg class="heart-svg" viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="hg" cx="38%" cy="30%">
             <stop offset="0%"   stop-color="#ff9dbf"/>
             <stop offset="45%"  stop-color="#e75480"/>
             <stop offset="100%" stop-color="#b5004e"/>
-          </radialGradient>
-          <radialGradient id="hglow" cx="50%" cy="50%">
-            <stop offset="0%"   stop-color="#ffb7c5" stop-opacity=".8"/>
-            <stop offset="100%" stop-color="#e75480" stop-opacity="0"/>
           </radialGradient>
           <filter id="glow">
             <feGaussianBlur stdDeviation="4" result="blur"/>
@@ -460,13 +487,9 @@
             <path d="M100,160 C100,160 10,100 10,55 C10,28 30,10 55,10 C70,10 85,18 100,35 C115,18 130,10 145,10 C170,10 190,28 190,55 C190,100 100,160 100,160Z"/>
           </clipPath>
         </defs>
-        <!-- glow ring -->
         <ellipse cx="100" cy="170" rx="60" ry="8" fill="rgba(231,84,128,.18)"/>
-        <!-- heart body -->
         <path d="M100,160 C100,160 10,100 10,55 C10,28 30,10 55,10 C70,10 85,18 100,35 C115,18 130,10 145,10 C170,10 190,28 190,55 C190,100 100,160 100,160Z" fill="url(#hg)" filter="url(#glow)"/>
-        <!-- gloss highlight top-left -->
         <ellipse cx="72" cy="50" rx="22" ry="13" fill="rgba(255,255,255,.38)" transform="rotate(-20,72,50)" clip-path="url(#hclip)"/>
-        <!-- gloss highlight small -->
         <ellipse cx="58" cy="38" rx="10" ry="6" fill="rgba(255,255,255,.55)" transform="rotate(-20,58,38)" clip-path="url(#hclip)"/>
       </svg>
     </div>
@@ -475,38 +498,43 @@
   </div>
 </div>
 
-<!-- ===================== PAGE 2 ===================== -->
 <div class="page" id="page2">
-  <span class="cat-sticker" id="cat-left"> </span>
-  <span class="cat-sticker" id="cat-right"> </span>
+  <div class="p2-layout-container">
+    
+    <div class="cat-row-top">
+      <span class="cat-inline" id="cat-left"><img class="cat-left" id="catLeft" src="images\WhatsApp_Image_2026-06-15_at_7.13.54_PM-removebg-preview.png"alt="crying cat"/>
+  </span>
+      <span class="cat-inline" id="cat-right"><img class="cat-right" id="catRight" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM__2_-removebg-preview.png" alt="crying cat"/>
+  </span>
+    </div>
 
-  <div class="p2-content">
-    <div id="typewriter"></div>
-    <button id="continue-btn">Continue 💗</button>
+    <div class="p2-content">
+      <div id="typewriter"></div>
+      <button id="continue-btn">Continue 💗</button>
+    </div>
+
   </div>
 </div>
 
-<!-- ===================== PAGE 3 ===================== -->
 <div class="page" id="page3">
   <div class="p3-inner">
     <div class="speech-bubble">
       "She's really sorry... 🥺"<br/>
       "Please give her one chance... 💗"
     </div>
-    <div class="teddy-wrap"> <img class="center-cat" src="images\download (5).jpg"style="width:70vw;max-width:250px;height:auto;" alt="cat with flowers"/></div>
+    <div class="teddy-wrap"><img class="center-cat" src="images\download (5).jpg" alt="cat with flowers"/></div>
+  </div>
     <div class="buttons-row" id="buttonsRow">
-      <button id="yes-btn">Yes ❤️</button>
+      <button id="yes-btn">Yess❤️</button>
     </div>
   </div>
-  <!-- no-btn lives outside so it can freely position -->
-  <button id="no-btn">No </button>
+  <button id="no-btn">Noo😒</button>
 </div>
 
-<!-- ===================== PAGE 4 ===================== -->
 <div class="page" id="page4">
   <div class="p4-content">
     <div class="speech-bubble-final">"Mwahhhhhhhh 😘💗"</div>
-    <div class="cat-final"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.52_PM-removebg-preview.png"style="width:70vw;max-width:250px;height:auto;" alt="hugging kittens"/>
+    <div class="cat-final"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.52_PM-removebg-preview.png" alt="hugging kittens"/>
   </div>
     <div id="final-text"></div>
   </div>
@@ -514,12 +542,12 @@
 
 <script>
 /* ═══════════════════════════════════════════════════
-   CANVAS PARTICLES (floating hearts + sparkles)
+   CANVAS PARTICLES
 ═══════════════════════════════════════════════════ */
 const canvas = document.getElementById('bgCanvas');
 const ctx = canvas.getContext('2d');
 
-function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resize();
 window.addEventListener('resize', resize);
 
@@ -528,8 +556,8 @@ const EMOJIS = ['💗','✨','🌸','💕','⭐','💖'];
 
 function mkParticle() {
   return {
-    x: Math.random() * innerWidth,
-    y: innerHeight + 20,
+    x: Math.random() * window.innerWidth,
+    y: window.innerHeight + 20,
     emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
     size: 14 + Math.random() * 20,
     speedY: -(0.4 + Math.random() * 0.7),
@@ -545,7 +573,7 @@ function mkParticle() {
 
 for (let i = 0; i < 22; i++) {
   const p = mkParticle();
-  p.y = Math.random() * innerHeight;
+  p.y = Math.random() * window.innerHeight;
   p.life = Math.random() * p.maxLife;
   PARTICLES.push(p);
 }
@@ -580,7 +608,7 @@ function animParticles() {
 animParticles();
 
 /* ═══════════════════════════════════════════════════
-   AUDIO (Web Audio API – soft heartbeat)
+   AUDIO (Web Audio API)
 ═══════════════════════════════════════════════════ */
 let audioCtx = null;
 let heartbeatInterval = null;
@@ -674,7 +702,6 @@ function goToPage(fromId, toId, delay = 900) {
 const heartBtn = document.getElementById('heartBtn');
 let heartClicked = false;
 
-// start heartbeat on first interaction
 document.addEventListener('click', () => { startHeartbeat(); }, { once: true });
 document.addEventListener('touchstart', () => { startHeartbeat(); }, { once: true });
 
@@ -684,14 +711,11 @@ heartBtn.addEventListener('click', () => {
   stopHeartbeat();
   playChime();
 
-  // glow burst
   heartBtn.style.filter = 'drop-shadow(0 0 60px rgba(231,84,128,.95))';
   heartBtn.style.transition = 'filter .25s';
 
-  // sparkle burst
-  spawnSparkBurst(innerWidth/2, innerHeight/2, 30);
+  spawnSparkBurst(window.innerWidth/2, window.innerHeight/2, 30);
 
-  // split hearts
   setTimeout(() => {
     const lh = document.createElement('div');
     const rh = document.createElement('div');
@@ -710,7 +734,7 @@ function spawnSparkBurst(cx, cy, count) {
     const el = document.createElement('div');
     el.className = 'spark-burst';
     const angle = (Math.PI * 2 * i) / count;
-    const dist = 80 + Math.random() * 120;
+    const dist = 60 + Math.random() * 80;
     el.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
     el.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
     el.style.setProperty('--sd', (.4 + Math.random() * .5) + 's');
@@ -728,7 +752,7 @@ const apologyText = `🫀🧚‍♀️
 
 Adiyyaaeee Abiiii !!! 💗✨
 
-Sorrrryyyyyy ngaaaaaa
+Sorrrryyyyyy ngaaaaaaa
 from the bottom of my hearttt !! 🌝❤️
 
 🥺💔
@@ -753,11 +777,9 @@ function startTypewriter() {
     if (i < apologyText.length) {
       el.textContent += apologyText[i];
       i++;
-      // emoji chars are often 2 JS chars – skip if needed
       const delay = apologyText[i-1] === '\n' ? 120 : 40;
       twTimeout = setTimeout(type, delay);
     } else {
-      // show continue button
       setTimeout(() => {
         const btn = document.getElementById('continue-btn');
         btn.classList.add('show');
@@ -769,7 +791,7 @@ function startTypewriter() {
 
 document.getElementById('continue-btn').addEventListener('click', () => {
   goToPage('page2', 'page3', 700);
-  initNoBtn();
+  setTimeout(initNoBtn, 800); 
 });
 
 /* ═══════════════════════════════════════════════════
@@ -777,24 +799,25 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 ═══════════════════════════════════════════════════ */
 function initNoBtn() {
   const noBtn = document.getElementById('no-btn');
-  // place it near yes button initially
   const yesBtn = document.getElementById('yes-btn');
   const rect = yesBtn.getBoundingClientRect();
-  noBtn.style.left = (rect.left - 130) + 'px';
-  noBtn.style.top  = rect.top + 'px';
+  
+  noBtn.style.left = Math.max(10, (rect.left - 120)) + 'px';
+  noBtn.style.top  = (rect.top - 60) + 'px';
 
   function flee(e) {
     e.preventDefault();
     const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
     let nx, ny;
-    for (let attempt = 0; attempt < 20; attempt++) {
-      nx = Math.random() * (innerWidth  - bw - 16) + 8;
-      ny = Math.random() * (innerHeight - bh - 16) + 8;
-      const cx = (e.clientX || e.touches?.[0]?.clientX || innerWidth/2);
-      const cy = (e.clientY || e.touches?.[0]?.clientY || innerHeight/2);
-      if (Math.hypot(nx - cx, ny - cy) > 120) break;
+    
+    for (let attempt = 0; attempt < 30; attempt++) {
+      nx = Math.random() * (window.innerWidth  - bw - 24) + 12;
+      ny = Math.random() * (window.innerHeight - bh - 24) + 12;
+      const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth/2);
+      const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight/2);
+      if (Math.hypot(nx - cx, ny - cy) > 80) break;
     }
-    noBtn.style.transition = 'left .22s cubic-bezier(.25,1.6,.5,1), top .22s cubic-bezier(.25,1.6,.5,1)';
+    noBtn.style.transition = 'left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1)';
     noBtn.style.left = nx + 'px';
     noBtn.style.top  = ny + 'px';
   }
@@ -808,9 +831,11 @@ function initNoBtn() {
    PAGE 3 – YES BUTTON
 ═══════════════════════════════════════════════════ */
 document.getElementById('yes-btn').addEventListener('click', () => {
+  const noBtn = document.getElementById('no-btn');
+  if(noBtn) noBtn.remove(); 
   playConfettiSound();
   launchConfetti();
-  spawnSparkBurst(innerWidth/2, innerHeight/2, 40);
+  spawnSparkBurst(window.innerWidth/2, window.innerHeight/2, 40);
   setTimeout(() => {
     goToPage('page3', 'page4', 700);
     startFinalTypewriter();
@@ -833,7 +858,6 @@ function launchConfetti() {
       document.body.appendChild(c);
       setTimeout(() => c.remove(), 3200);
 
-      // extra heart emojis
       if (Math.random() > .6) {
         const h = document.createElement('div');
         h.style.cssText = `position:fixed;font-size:${16+Math.random()*20}px;
@@ -853,7 +877,7 @@ function launchConfetti() {
 const finalMsg = `🥹❤️
 
 Thankuuuu Forrr
-forgivinggg Meeee Ngaa !!`;
+forgivinggg Meeee !!`;
 
 function startFinalTypewriter() {
   const el = document.getElementById('final-text');
