@@ -821,34 +821,36 @@ function initNoBtn() {
   noBtn.classList.remove('run-away');
   noBtn.style.left = "auto";
   noBtn.style.top = "auto";
-
-  function flee(e) {
+function flee(e) {
     if (e) e.preventDefault();
     
-    // 1. Click panna udane runtime class injection trigger panrom (state switches to position fixed instantly)
+    // 1. Instantly switch to fixed layout on click trigger
     noBtn.classList.add('run-away');
     
-    const bw = noBtn.offsetWidth || 90;
+    // 📍 CRITICAL FIX: Direct inline fixed overrides enforce panrom, thirumba thirumba click panna jump aagurathuku
+    noBtn.style.position = "fixed"; 
+    
+    const bw = noBtn.offsetWidth || 95;
     const bh = noBtn.offsetHeight || 45;
     let nx, ny;
     
-    // 2. Active monitor layout display metrics calculation kulla window position randomization setup loops
-    for (let attempt = 0; attempt < 50; attempt++) {
-      // Screen inner bounds variable boundary values calculation
+    // 2. Fresh global screen coordinates calculation matrix loop
+    for (let attempt = 0; attempt < 60; attempt++) {
+      // Direct viewport window measurements basis-la positions randomise panrom
       nx = Math.random() * (window.innerWidth - bw - 40) + 20;
       ny = Math.random() * (window.innerHeight - bh - 40) + 20;
       
       const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
       const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
       
-      // Safety radius layout logic optimization
       if (Math.hypot(nx - cx, ny - cy) > 130) break;
     }
     
-    // 3. Dynamic absolute coordinate positioning assignment execution
+    // 3. Apply coordinates with forced execution properties
     noBtn.style.left = nx + 'px';
     noBtn.style.top = ny + 'px';
   }
+
 
   // Double click event stacking safety prevention binding trigger execution
   noBtn.removeEventListener('click', flee);
