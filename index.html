@@ -351,21 +351,30 @@
   #yes-btn:hover { transform: scale(1.08); }
 
   #no-btn {
-    padding: 12px 28px;
-    background: #f8c8d8;
-    color: var(--text-dark);
-    border: 1.5px solid var(--pink2);
-    border-radius: 50px;
-    font-family: 'Nunito', sans-serif;
-    font-size: .95rem;
-    font-weight: 700;
-    cursor: pointer;
-    position: fixed; 
-    transition: box-shadow .15s;
-    z-index: 20;
-    white-space: nowrap;
-  }
-  #no-btn:hover { box-shadow: 0 4px 16px var(--shadow); }
+  padding: 12px 28px;
+  background: #f8c8d8;
+  color: var(--text-dark);
+  border: 1.5px solid var(--pink2);
+  border-radius: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  
+  /* FIX 1: absolute coding kuduthuruken, ippo page-ah vittu leak aagathu */
+  position: absolute; 
+  display: none; /* FIX 2: Default-ah hide aayirukum, vera page la theriyaathu */
+  transition: box-shadow .15s;
+  z-index: 20;
+  white-space: nowrap;
+}
+
+/* Page 3 vanthathum button theriya intha class venum */
+#no-btn.show {
+  display: block; 
+}
+
+#no-btn:hover { box-shadow: 0 4px 16px var(--shadow); }
 
   /* ──────────────────────────── PAGE 4 ────────────────────────── */
   #page4 {
@@ -520,19 +529,22 @@
   </div>
 </div>
 
+<!-- ===================== PAGE 3 ===================== -->
 <div class="page" id="page3">
   <div class="p3-inner">
     <div class="speech-bubble">
       "She's really sorry... 🥺"<br/>
       "Please give her one chance... 💗"
     </div>
-    <div class="teddy-wrap"><img class="center-cat" src="images\download (5).jpg"style="width: 90px !important; height: auto;" alt="cat with flowers"/></div>
-  </div>
+    <!-- Emojis-ah thookitu unga cat img (IMG_1311.jpg template) perfect fit-ah set panni iruken -->
+    <img class="center-cat" src="images\download (5).jpg"style="width: 90px !important; height: auto;" alt="cat with flowers"/>
+    
     <div class="buttons-row" id="buttonsRow">
-      <button id="yes-btn">Yess❤️</button>
+      <button id="yes-btn">Yess ❤️</button>
+      <!-- FIX: No button-ah absolute parent kulla, yes button kitteraye vachuten -->
+      <button id="no-btn">Noo 😒</button>
     </div>
   </div>
-  <button id="no-btn">Noo😒</button>
 </div>
 
 <div class="page" id="page4">
@@ -804,33 +816,54 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 function initNoBtn() {
   const noBtn = document.getElementById('no-btn');
   const yesBtn = document.getElementById('yes-btn');
-  const rect = yesBtn.getBoundingClientRect();
+  const page3 = document.getElementById('page3');
   
-  // Mudhala button-ah yes button pakkathula set panniduno
-  noBtn.style.left = Math.max(10, (rect.left - 120)) + 'px';
-  noBtn.style.top  = (rect.top - 60) + 'px';
+  // 1. Page 3 load aahum pothu mattum button-ah show pannu
+  noBtn.classList.add('show');
+  
+  // 2. Initial inline position-ah reset panni neat-ah inline vainga
+  noBtn.style.left = "";
+  noBtn.style.top = "";
 
+  // 3. Desktop/Mobile layout bounds check panni, "Yes" button pakkathulaye align pannum
+  const yesRect = yesBtn.getBoundingClientRect();
+  const pageRect = page3.getBoundingClientRect();
+  
+  let initialLeft = yesRect.left - pageRect.left - 130;
+  let initialTop = yesRect.top - pageRect.top;
+  
+  // Chinna mobile screens-la left overlap aahama iruka safety adjustment
+  if (initialLeft < 10) {
+    initialLeft = yesRect.left - pageRect.left + yesRect.width + 15;
+  }
+  
+  noBtn.style.left = initialLeft + 'px';
+  noBtn.style.top = initialTop + 'px';
+
+  // 4. Intha function thaan CLiCK (press) panna udane odi poga vaikkum
   function flee(e) {
     if (e) e.preventDefault();
-    const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
+    const bw = noBtn.offsetWidth;
+    const bh = noBtn.offsetHeight;
     let nx, ny;
     
-    // Click/Press pannungapo mattum random-ah vera coordinates-ku jump aagum
-    for (let attempt = 0; attempt < 30; attempt++) {
-      nx = Math.random() * (window.innerWidth  - bw - 24) + 12;
-      ny = Math.random() * (window.innerHeight - bh - 24) + 12;
+    for (let attempt = 0; attempt < 40; attempt++) {
+      nx = Math.random() * (window.innerWidth - bw - 30) + 15;
+      ny = Math.random() * (window.innerHeight - bh - 30) + 15;
       
-      const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth/2);
-      const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight/2);
-      if (Math.hypot(nx - cx, ny - cy) > 80) break;
+      const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
+      const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
+      
+      if (Math.hypot(nx - cx, ny - cy) > 100) break;
     }
     
     noBtn.style.transition = 'left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1)';
     noBtn.style.left = nx + 'px';
-    noBtn.style.top  = ny + 'px';
+    noBtn.style.top = ny + 'px';
   }
 
-  // FIX: Mouseover matrum touchstart-ah remove pannitu, pure-ah CLICK-ku mattum trigger set panni iruken
+  // Pure click event restriction (No mouseover, no touchstart)
+  noBtn.removeEventListener('click', flee);
   noBtn.addEventListener('click', flee);
 }
 /* ═══════════════════════════════════════════════════
