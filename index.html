@@ -47,7 +47,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity .65s ease;
-    padding: 40px 20px; /* Padding to ensure space on mobile */
+    padding: 40px 20px;
   }
   .page.active { opacity: 1; pointer-events: all; position: relative; }
   .page.fade-out { opacity: 0; pointer-events: none; position: absolute; }
@@ -78,7 +78,6 @@
     max-width: 400px;
   }
 
-  /* STICKERS ABOVE TEXT (Page 1) */
   .sticker-row-top {
     display: flex;
     justify-content: center;
@@ -158,7 +157,6 @@
     100% { transform: translateX(110vw) translateY(-20px) rotate(-5deg); opacity:0; }
   }
 
-  /* HEART SPLIT */
   .heart-half {
     position: fixed;
     font-size: clamp(80px, 15vw, 110px);
@@ -183,7 +181,6 @@
     justify-content: center;
   }
 
-  /* MAIN WRAPPER FOR PAGE 2 CONTENT FLOW */
   .p2-layout-container {
     display: flex;
     flex-direction: column;
@@ -192,15 +189,14 @@
     max-width: 430px;
   }
 
-  /* IMAGES/CATS PLACED EXACTLY ABOVE THE TEXT BOX */
   .cat-row-top {
     display: flex;
     justify-content: center;
     align-items: flex-end;
     gap: 25px;
-    margin-bottom: 5px; /* Slight overlap on top of card for styling, change to 0px if you want complete separation */
+    margin-bottom: 5px;
     width: 100%;
-    z-index: 10; /* Higher z-index so it sits cleanly on top */
+    z-index: 10;
   }
 
   .cat-inline {
@@ -209,18 +205,17 @@
     display: inline-block;
     filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
   }
-  /* Update this exact block in your CSS */
-.custom-img {
-  /* !important add panni iruken, ippo browser kandipa size-ah kuraikkanum */
-  width: clamp(75px, 15vw, 110px) !important;
-  height: auto !important;
-  max-height: 110px !important;
-  object-fit: contain !important;
-  user-select: none;
-  display: inline-block;
-  vertical-align: bottom;
-  filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
-}
+  
+  .custom-img {
+    width: clamp(75px, 15vw, 110px) !important;
+    height: auto !important;
+    max-height: 110px !important;
+    object-fit: contain !important;
+    user-select: none;
+    display: inline-block;
+    vertical-align: bottom;
+    filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
+  }
   #cat-left  { animation: catFloat 3s ease-in-out infinite; }
   #cat-right { animation: catFloat 3s ease-in-out infinite .7s; }
   @keyframes catFloat {
@@ -228,7 +223,6 @@
     50%     { transform: translateY(-12px); }
   }
 
-  /* THE WHITE TEXT BOX CARD */
   .p2-content {
     position: relative;
     z-index: 5;
@@ -287,17 +281,6 @@
     max-width: 380px;
   }
 
-  .teddy-wrap {
-    font-size: clamp(85px, 24vw, 115px);
-    animation: teddyBounce 2s ease-in-out infinite;
-    filter: drop-shadow(0 6px 14px rgba(231,84,128,.25));
-    line-height: 1;
-  }
-  @keyframes teddyBounce {
-    0%,100% { transform: translateY(0) rotate(-4deg); }
-    50%     { transform: translateY(-12px) rotate(4deg); }
-  }
-
   .speech-bubble {
     position: relative;
     background: rgba(255,255,255,.85);
@@ -350,34 +333,30 @@
   }
   #yes-btn:hover { transform: scale(1.08); }
 
-/* Update this exact block in your CSS style section */
-#no-btn {
-  padding: 12px 28px;
-  background: #f8c8d8;
-  color: var(--text-dark);
-  border: 1.5px solid var(--pink2);
-  border-radius: 50px;
-  font-family: 'Nunito', sans-serif;
-  font-size: .95rem;
-  font-weight: 700;
-  cursor: pointer;
-  
-  /* 📍 FIX 1: Initial flow relative state layout! Yes button pakkathulaye safe ah locked ah irukum */
-  position: relative; 
-  left: auto !important;
-  top: auto !important;
-  display: inline-block;
-  z-index: 20;
-  white-space: nowrap;
-}
+  /* 📍 FIXED CSS OVERRIDE: Removed the '!important' from top/left so javascript can safely move the button anywhere */
+  #no-btn {
+    padding: 12px 28px;
+    background: #f8c8d8;
+    color: var(--text-dark);
+    border: 1.5px solid var(--pink2);
+    border-radius: 50px;
+    font-family: 'Nunito', sans-serif;
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative; 
+    display: inline-block;
+    z-index: 999;
+    white-space: nowrap;
+  }
 
-/* 📍 FIX 2: User click panna udane javascript intha class ah active pannum, apo mattum thaan state fixed aahi escape mode on aagum */
-#no-btn.run-away {
-  position: fixed !important;
-  transition: left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1);
-}
+  #no-btn.run-away {
+    position: fixed !important;
+    transition: none !important; /* Disables animation lag to stop it freezing up */
+  }
 
-#no-btn:hover { box-shadow: 0 4px 16px var(--shadow); }
+  #no-btn:hover { box-shadow: 0 4px 16px var(--shadow); }
+
   /* ──────────────────────────── PAGE 4 ────────────────────────── */
   #page4 {
     background: linear-gradient(160deg, #fff0f5 0%, #ffe4ec 55%, #ffd6e7 100%);
@@ -413,7 +392,7 @@
   }
   @keyframes kissFloat {
     0%,100% { transform: translateY(0) rotate(-5deg); }
-    50%     { transform: translateY(-14px) rotate(5deg); }
+    50%      { transform: translateY(-14px) rotate(5deg); }
   }
 
   .speech-bubble-final {
@@ -439,7 +418,6 @@
     border-bottom-color: rgba(255,255,255,.75);
   }
 
-  /* ──────────────────────────── CONFETTI ─────────────────────── */
   .confetti-piece {
     position: fixed;
     width: 10px; height: 10px;
@@ -453,7 +431,6 @@
     100% { transform: translateY(100vh) rotate(720deg); opacity:0; }
   }
 
-  /* ──────────────────────────── SPARKLE BURST ─────────────────── */
   .spark-burst {
     position: fixed;
     pointer-events: none;
@@ -478,10 +455,8 @@
 
   <div class="p1-content">
     <div class="sticker-row-top">
-      <span class="sticker-inline" id="teddy"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM-removebg-preview.png"style="width: 90px !important; height: auto;" alt="hugging kittens"/>
-</span>
-      <span class="sticker-inline" id="bunny"><img class="final-cat" src="images\download__6_-removebg-preview.png"style="width: 90px !important; height: auto;"alt="hugging kittens"/>
-  </span>
+      <span class="sticker-inline" id="teddy"><img class="final-cat" src="images/WhatsApp_Image_2026-06-15_at_7.13.53_PM-removebg-preview.png" style="width: 90px !important; height: auto;" alt="hugging kittens"/></span>
+      <span class="sticker-inline" id="bunny"><img class="final-cat" src="images/download__6_-removebg-preview.png" style="width: 90px !important; height: auto;" alt="hugging kittens"/></span>
     </div>
 
     <p class="above-text">A little something for you... 💗</p>
@@ -517,10 +492,8 @@
   <div class="p2-layout-container">
     
     <div class="cat-row-top">
-      <span class="cat-inline" id="cat-left"><img class="cat-left" id="catLeft" src="images\WhatsApp_Image_2026-06-15_at_7.13.54_PM-removebg-preview.png"style="width: 90px !important; height: auto;"alt="crying cat"/>
-  </span>
-      <span class="cat-inline" id="cat-right"><img class="cat-right" id="catRight" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM__2_-removebg-preview.png"style="width: 90px !important; height: auto;" alt="crying cat"/>
-  </span>
+      <span class="cat-inline" id="cat-left"><img class="cat-left" id="catLeft" src="images/WhatsApp_Image_2026-06-15_at_7.13.54_PM-removebg-preview.png" style="width: 90px !important; height: auto;" alt="crying cat"/></span>
+      <span class="cat-inline" id="cat-right"><img class="cat-right" id="catRight" src="images/WhatsApp_Image_2026-06-15_at_7.13.53_PM__2_-removebg-preview.png" style="width: 90px !important; height: auto;" alt="crying cat"/></span>
     </div>
 
     <div class="p2-content">
@@ -531,7 +504,6 @@
   </div>
 </div>
 
-<!-- ===================== PAGE 3 ===================== -->
 <div class="page" id="page3">
   <div class="p3-inner" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 80vh; text-align: center; position: relative;">
     
@@ -540,10 +512,8 @@
       "Please give her one chance... 💗"
     </div>
 
-    <!-- Center image element template (IMG_1313.jpg asset) -->
-    <img class="center-cat" src="images\download (5).jpg"style="width: 90px !important; height: auto;" alt="cat with flowers"/>
+    <img class="center-cat" src="images/download (5).jpg" style="width: 90px !important; height: auto;" alt="cat with flowers"/>
     
-    <!-- 📍 FIX: Intha div row thaan absolute magic! Rendu button-um default ah inline pakkathula pakkathula locked-ah irukum -->
     <div id="p3-button-container" style="display: flex; gap: 15px; justify-content: center; align-items: center; width: 100%; position: relative; min-height: 60px; margin-top: 10px;">
       <button id="yes-btn">Yess ❤️</button>
       <button id="no-btn">Noo 😒</button>
@@ -555,8 +525,7 @@
 <div class="page" id="page4">
   <div class="p4-content">
     <div class="speech-bubble-final">"Mwahhhhhhhh 😘💗"</div>
-    <div class="cat-final"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.52_PM-removebg-preview.png"style="width: 90px !important; height: auto;" alt="hugging kittens"/>
-  </div>
+    <div class="cat-final"><img class="final-cat" src="images/WhatsApp_Image_2026-06-15_at_7.13.52_PM-removebg-preview.png" style="width: 90px !important; height: auto;" alt="hugging kittens"/></div>
     <div id="final-text"></div>
   </div>
 </div>
@@ -807,69 +776,68 @@ function startTypewriter() {
 
 document.getElementById('continue-btn').addEventListener('click', () => {
   goToPage('page2', 'page3', 700);
-  setTimeout(initNoBtn, 750); // This resets layout variables baseline perfectly!
+  setTimeout(initNoBtn, 750);
 });
 
 /* ═══════════════════════════════════════════════════
-   PAGE 3 – ESCAPE BUTTON
+   PAGE 3 – ESCAPE BUTTON (100% FIXED VERSION)
 ═══════════════════════════════════════════════════ */
 function initNoBtn() {
   const noBtn = document.getElementById('no-btn');
   
-  // Starting safe layout configuration resets
+  // Clean dynamic initialization states
   noBtn.classList.remove('run-away');
   noBtn.style.position = "relative";
-  noBtn.style.left = "auto";
-  noBtn.style.top = "auto";
-  noBtn.style.transform = "none";
+  noBtn.style.removeProperty('left');
+  noBtn.style.removeProperty('top');
 
   function flee(e) {
     if (e) {
       e.preventDefault();
-      e.stopPropagation(); // Prevents layout hierarchy bubbling glitches
+      e.stopPropagation();
     }
     
-    // 1. Force setting absolute positioning layer directly style matrix
-    noBtn.style.position = "fixed";
+    // 1. Force absolute position overrides directly
     noBtn.classList.add('run-away');
+    noBtn.style.position = "fixed";
     
     const bw = noBtn.offsetWidth || 95;
     const bh = noBtn.offsetHeight || 45;
     
-    // 2. Clear out current active touch screen positions safely
+    // 2. Fetch current touch point / cursor positions
     const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
     const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
     
     let nx = 0;
     let ny = 0;
     
-    // 3. Foolproof screen boundary dynamic calculation loops
-    for (let attempt = 0; attempt < 100; attempt++) {
-      // Direct global window pixel calculations overrides
+    // 3. Screen bounds calculation safety matrix loops
+    for (let attempt = 0; attempt < 80; attempt++) {
       nx = Math.floor(Math.random() * (window.innerWidth - bw - 60)) + 30;
       ny = Math.floor(Math.random() * (window.innerHeight - bh - 60)) + 30;
       
-      // Target alignment logic: Strictly checks to ensure it does NOT lock at the exact center (image_753c97 box bug)
       const distFromPointer = Math.hypot(nx - cx, ny - cy);
       const distFromCenter = Math.hypot(nx - (window.innerWidth / 2), ny - (window.innerHeight / 2));
       
-      if (distFromPointer > 150 && distFromCenter > 80) {
-        break; // Found perfect random safe coordinates setup!
+      // Enforces safe boundaries: Does NOT freeze at center, does NOT overlay under fingers
+      if (distFromPointer > 140 && distFromCenter > 100) {
+        break;
       }
     }
     
-    // 4. Directly enforcing layout updates without mixing rendering delays
-    noBtn.style.left = nx + 'px';
-    noBtn.style.top = ny + 'px';
+    // 4. Directly inject style property attributes overriding CSS rules!
+    noBtn.style.setProperty('left', nx + 'px', 'important');
+    noBtn.style.setProperty('top', ny + 'px', 'important');
   }
 
-  // Dual engine system handling touchscreens and mouse clicks perfectly
-  const eventsList = ['pointerdown', 'touchstart', 'click'];
-  eventsList.forEach(evt => {
+  // Pure cross-platform event integration loops
+  const interactionEvents = ['pointerdown', 'touchstart', 'click'];
+  interactionEvents.forEach(evt => {
     noBtn.removeEventListener(evt, flee);
     noBtn.addEventListener(evt, flee, { passive: false });
   });
 }
+
 /* ═══════════════════════════════════════════════════
    PAGE 3 – YES BUTTON
 ═══════════════════════════════════════════════════ */
