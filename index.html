@@ -211,16 +211,14 @@
   }
   /* Update this exact block in your CSS */
 .custom-img {
-  /* Mobile-la max 80px-kum, desktop-la max 140px-kum mela pogaatha maathiri bound panni iruken */
-  width: clamp(80px, 18vw, 140px);
-  height: auto;
-  max-height: 140px; /* Vertical-ah layout-ah push pannama iruka */
-  object-fit: contain;
+  /* !important add panni iruken, ippo browser kandipa size-ah kuraikkanum */
+  width: clamp(75px, 15vw, 110px) !important;
+  height: auto !important;
+  max-height: 110px !important;
+  object-fit: contain !important;
   user-select: none;
   display: inline-block;
-  
-  /* Image back cuts background-ode overlap aahama clean-ah theriya */
-  vertical-align: bottom; 
+  vertical-align: bottom;
   filter: drop-shadow(0 4px 10px rgba(231,84,128,0.15));
 }
   #cat-left  { animation: catFloat 3s ease-in-out infinite; }
@@ -469,9 +467,9 @@
 
   <div class="p1-content">
     <div class="sticker-row-top">
-      <span class="sticker-inline" id="teddy"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM-removebg-preview.png" alt="hugging kittens"/>
+      <span class="sticker-inline" id="teddy"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM-removebg-preview.png"style="width: 90px !important; height: auto;" alt="hugging kittens"/>
 </span>
-      <span class="sticker-inline" id="bunny"><img class="final-cat" src="images\download__6_-removebg-preview.png"alt="hugging kittens"/>
+      <span class="sticker-inline" id="bunny"><img class="final-cat" src="images\download__6_-removebg-preview.png"style="width: 90px !important; height: auto;"alt="hugging kittens"/>
   </span>
     </div>
 
@@ -508,9 +506,9 @@
   <div class="p2-layout-container">
     
     <div class="cat-row-top">
-      <span class="cat-inline" id="cat-left"><img class="cat-left" id="catLeft" src="images\WhatsApp_Image_2026-06-15_at_7.13.54_PM-removebg-preview.png"alt="crying cat"/>
+      <span class="cat-inline" id="cat-left"><img class="cat-left" id="catLeft" src="images\WhatsApp_Image_2026-06-15_at_7.13.54_PM-removebg-preview.png"style="width: 90px !important; height: auto;"alt="crying cat"/>
   </span>
-      <span class="cat-inline" id="cat-right"><img class="cat-right" id="catRight" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM__2_-removebg-preview.png" alt="crying cat"/>
+      <span class="cat-inline" id="cat-right"><img class="cat-right" id="catRight" src="images\WhatsApp_Image_2026-06-15_at_7.13.53_PM__2_-removebg-preview.png"style="width: 90px !important; height: auto;" alt="crying cat"/>
   </span>
     </div>
 
@@ -528,7 +526,7 @@
       "She's really sorry... 🥺"<br/>
       "Please give her one chance... 💗"
     </div>
-    <div class="teddy-wrap"><img class="center-cat" src="images\download (5).jpg" alt="cat with flowers"/></div>
+    <div class="teddy-wrap"><img class="center-cat" src="images\download (5).jpg"style="width: 90px !important; height: auto;" alt="cat with flowers"/></div>
   </div>
     <div class="buttons-row" id="buttonsRow">
       <button id="yes-btn">Yess❤️</button>
@@ -540,7 +538,7 @@
 <div class="page" id="page4">
   <div class="p4-content">
     <div class="speech-bubble-final">"Mwahhhhhhhh 😘💗"</div>
-    <div class="cat-final"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.52_PM-removebg-preview.png" alt="hugging kittens"/>
+    <div class="cat-final"><img class="final-cat" src="images\WhatsApp_Image_2026-06-15_at_7.13.52_PM-removebg-preview.png"style="width: 90px !important; height: auto;" alt="hugging kittens"/>
   </div>
     <div id="final-text"></div>
   </div>
@@ -808,31 +806,33 @@ function initNoBtn() {
   const yesBtn = document.getElementById('yes-btn');
   const rect = yesBtn.getBoundingClientRect();
   
+  // Mudhala button-ah yes button pakkathula set panniduno
   noBtn.style.left = Math.max(10, (rect.left - 120)) + 'px';
   noBtn.style.top  = (rect.top - 60) + 'px';
 
   function flee(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
     let nx, ny;
     
+    // Click/Press pannungapo mattum random-ah vera coordinates-ku jump aagum
     for (let attempt = 0; attempt < 30; attempt++) {
       nx = Math.random() * (window.innerWidth  - bw - 24) + 12;
       ny = Math.random() * (window.innerHeight - bh - 24) + 12;
+      
       const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth/2);
       const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight/2);
       if (Math.hypot(nx - cx, ny - cy) > 80) break;
     }
+    
     noBtn.style.transition = 'left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1)';
     noBtn.style.left = nx + 'px';
     noBtn.style.top  = ny + 'px';
   }
 
-  noBtn.addEventListener('mouseover', flee);
-  noBtn.addEventListener('touchstart', flee, { passive: false });
+  // FIX: Mouseover matrum touchstart-ah remove pannitu, pure-ah CLICK-ku mattum trigger set panni iruken
   noBtn.addEventListener('click', flee);
 }
-
 /* ═══════════════════════════════════════════════════
    PAGE 3 – YES BUTTON
 ═══════════════════════════════════════════════════ */
