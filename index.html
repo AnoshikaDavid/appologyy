@@ -534,19 +534,22 @@
 
 <!-- ===================== PAGE 3 ===================== -->
 <div class="page" id="page3">
-  <div class="p3-inner">
+  <div class="p3-inner" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 80vh; text-align: center; position: relative;">
+    
     <div class="speech-bubble">
       "She's really sorry... 🥺"<br/>
       "Please give her one chance... 💗"
     </div>
-    <!-- Emojis-ah thookitu unga cat img (IMG_1311.jpg template) perfect fit-ah set panni iruken -->
+
+    <!-- Center image element template (IMG_1313.jpg asset) -->
     <img class="center-cat" src="images\download (5).jpg"style="width: 90px !important; height: auto;" alt="cat with flowers"/>
     
-    <div class="buttons-row" id="buttonsRow">
+    <!-- 📍 FIX: Intha div row thaan absolute magic! Rendu button-um default ah inline pakkathula pakkathula locked-ah irukum -->
+    <div id="p3-button-container" style="display: flex; gap: 15px; justify-content: center; align-items: center; width: 100%; position: relative; min-height: 60px; margin-top: 10px;">
       <button id="yes-btn">Yess ❤️</button>
-      <!-- FIX: No button-ah absolute parent kulla, yes button kitteraye vachuten -->
       <button id="no-btn">Noo 😒</button>
     </div>
+
   </div>
 </div>
 
@@ -818,53 +821,44 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 ═══════════════════════════════════════════════════ */
 function initNoBtn() {
   const noBtn = document.getElementById('no-btn');
-  const yesBtn = document.getElementById('yes-btn');
-  const page3 = document.getElementById('page3');
   
-  // 1. Mudhala button-ah active/visible aakiduno
-  noBtn.classList.add('show');
-  
-  noBtn.style.left = "";
-  noBtn.style.top = "";
+  // 1. Starting setup absolute inline reset. Yes pakkathulaye default structural CSS padhi ukkarum
+  noBtn.style.position = "static";
+  noBtn.style.left = "auto";
+  noBtn.style.top = "auto";
+  noBtn.style.transform = "none";
+  noBtn.style.transition = "none";
 
-  // 2. Clear calculation relative to Page 3 boundary bounds
-  const yesRect = yesBtn.getBoundingClientRect();
-  const pageRect = page3.getBoundingClientRect();
-  
-  // Normal screen-la Yes button-ku left side-la ukkarum
-  let initialLeft = yesRect.left - pageRect.left - 130;
-  let initialTop = yesRect.top - pageRect.top;
-  
-  // Mobile size check: Left space pathala na, automatically right side layout push pannum
-  if (initialLeft < 15) {
-    initialLeft = yesRect.left - pageRect.left + yesRect.width + 15;
-  }
-  
-  noBtn.style.left = initialLeft + 'px';
-  noBtn.style.top = initialTop + 'px';
-
-  // 3. Deliberate click escape trigger function
   function flee(e) {
     if (e) e.preventDefault();
-    const bw = noBtn.offsetWidth || 100;
+    
+    // 2. Click panna udane layout flow-vatha thookitu relative absolute display coordinates element structure-ku instantly trigger panna vaikirom
+    noBtn.style.position = "fixed";
+    
+    const bw = noBtn.offsetWidth || 90;
     const bh = noBtn.offsetHeight || 45;
     let nx, ny;
     
-    for (let attempt = 0; attempt < 40; attempt++) {
+    // 3. User screen interface boundary kulla safety jump coordinates loops execution
+    for (let attempt = 0; attempt < 50; attempt++) {
       nx = Math.random() * (window.innerWidth - bw - 40) + 20;
       ny = Math.random() * (window.innerHeight - bh - 40) + 20;
       
+      // User thotta pointer dynamic space offset calculation
       const cx = (e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2);
       const cy = (e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2);
       
-      if (Math.hypot(nx - cx, ny - cy) > 110) break;
+      // Too close matching prevent profile
+      if (Math.hypot(nx - cx, ny - cy) > 120) break;
     }
     
+    // Smooth transition path animation frame
     noBtn.style.transition = 'left .25s cubic-bezier(.25,1.6,.5,1), top .25s cubic-bezier(.25,1.6,.5,1)';
     noBtn.style.left = nx + 'px';
     noBtn.style.top = ny + 'px';
   }
 
+  // Double click safety clearance setup bind click listener execution
   noBtn.removeEventListener('click', flee);
   noBtn.addEventListener('click', flee);
 }
